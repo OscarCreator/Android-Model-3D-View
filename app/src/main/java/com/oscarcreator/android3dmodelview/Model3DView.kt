@@ -8,7 +8,7 @@ class Model3DView(context: Context): GLSurfaceView(context) {
     private val renderer: BasicRenderer
 
     init {
-        setEGLContextClientVersion(2)
+        setEGLContextClientVersion(3)
 
         //Only draw the view when drawing data is changed
         renderer = BasicRenderer()
