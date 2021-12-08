@@ -5,6 +5,7 @@ import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.opengl.Matrix
 import com.oscarcreator.android3dmodelview.R
+import com.oscarcreator.android3dmodelview.shaders.StaticShader
 import com.oscarcreator.android3dmodelview.shaders.loadShader
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -12,7 +13,7 @@ import java.nio.FloatBuffer
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
-class BasicRenderer(val context: Context) : GLSurfaceView.Renderer {
+class BasicRenderer(private val context: Context) : GLSurfaceView.Renderer {
 
     private lateinit var triangle: Triangle
 
@@ -20,6 +21,9 @@ class BasicRenderer(val context: Context) : GLSurfaceView.Renderer {
     private val projectionMatrix = FloatArray(16)
     private val viewMatrix = FloatArray(16)
     private val rotationMatrix = FloatArray(16)
+
+
+    private lateinit var shader: StaticShader
 
     // renderer code runs on a separate thread
     @Volatile
@@ -29,7 +33,8 @@ class BasicRenderer(val context: Context) : GLSurfaceView.Renderer {
         // set the background frame color
         GLES20.glClearColor(0f, 1f, 0f,1f)
 
-        triangle = Triangle(context)
+        shader = StaticShader(context)
+        triangle = Triangle(context, shader.programId)
     }
 
     // Called when screen size is changed
@@ -64,18 +69,11 @@ class BasicRenderer(val context: Context) : GLSurfaceView.Renderer {
         // combine the rotation matrix with projection and camera view
         Matrix.multiplyMM(scratch, 0, modelViewProjectionMatrix, 0, rotationMatrix, 0)
 
+        shader.useProgram()
         // draw shape
         triangle.draw(scratch)
-    }
-}
 
-fun loadShader(type: Int, shaderCode: String): Int {
-    // vertex shader type: GLES20.GL_VERTEX_SHADER
-    // vertex shader type: GLES20.GL_FRAGMENT_SHADER
-    return GLES20.glCreateShader(type).also { shader ->
-        // add source code to shade and compile it
-        GLES20.glShaderSource(shader, shaderCode)
-        GLES20.glCompileShader(shader)
+        shader.stop()
     }
 }
 
@@ -86,7 +84,7 @@ var triangleCoords = floatArrayOf(
     0.5f, -0.311f, 0f   // right
 )
 
-class Triangle(context: Context) {
+class Triangle(context: Context, private val tempProgramId: Int) {
 
     // r, g, b, alpha
     val color = floatArrayOf(0.34567f, 0.4567854f, 0.289348f, 1f)
@@ -106,8 +104,6 @@ class Triangle(context: Context) {
 
         }
 
-    private var program: Int
-
     private var vPositionHandle: Int = 0
     private var vColorHandle: Int = 0
     private var vPMatrixHandle: Int = 0
@@ -115,24 +111,11 @@ class Triangle(context: Context) {
     private val vertexCount: Int = triangleCoords.size / COORDS_PER_VERTEX
     private val vertexStride: Int = COORDS_PER_VERTEX * 4 // 4 bytes per vertex
 
-    init {
 
-        val vertexShader: Int = loadShader(context, R.raw.vertex_shader, GLES20.GL_VERTEX_SHADER)
-        val fragmentShader: Int = loadShader(context, R.raw.fragment_shader, GLES20.GL_FRAGMENT_SHADER)
-        program = GLES20.glCreateProgram().also {
-            // add vertex shader to program
-            GLES20.glAttachShader(it, vertexShader)
-            // add fragment shader to program
-            GLES20.glAttachShader(it, fragmentShader)
-            // creates opengl program executables
-            GLES20.glLinkProgram(it)
-        }
-    }
 
     fun draw(modelViewProjectionMatrix: FloatArray) {
-        GLES20.glUseProgram(program)
 
-        vPositionHandle = GLES20.glGetAttribLocation(program, "vPosition").also { positionHandle ->
+        vPositionHandle = GLES20.glGetAttribLocation(tempProgramId, "vPosition").also { positionHandle ->
             // enable a handle to the triangle vertices
             GLES20.glEnableVertexAttribArray(positionHandle)
 
@@ -147,14 +130,14 @@ class Triangle(context: Context) {
             )
 
             // get handle to fragment shader's color memeber
-            vColorHandle = GLES20.glGetUniformLocation(program, "vColor").also { vColorHandle ->
+            vColorHandle = GLES20.glGetUniformLocation(tempProgramId, "vColor").also { vColorHandle ->
                 // set color for drawing triangle
                 GLES20.glUniform4fv(vColorHandle, 1, color, 0)
 
             }
 
             // get handle to shape's transformation matrix
-            vPMatrixHandle = GLES20.glGetUniformLocation(program, "uMVPMatrix")
+            vPMatrixHandle = GLES20.glGetUniformLocation(tempProgramId, "uMVPMatrix")
 
             // pass the projection and view transformation to the shader
             GLES20.glUniformMatrix4fv(vPMatrixHandle, 1, false, modelViewProjectionMatrix, 0)

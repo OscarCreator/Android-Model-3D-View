@@ -9,10 +9,58 @@ import java.io.InputStreamReader
 import java.lang.StringBuilder
 import kotlin.system.exitProcess
 
-class ShaderProgram {
+abstract class ShaderProgram(context: Context, vertexShaderResourceId: Int, fragmentShaderResourceId: Int) {
 
     companion object {
         const val TAG = "ShaderProgram"
+    }
+
+    val programId: Int
+    private val vertexShaderId: Int
+    private val fragmentShaderId: Int
+
+    init {
+
+        vertexShaderId = loadShader(context, vertexShaderResourceId, GLES20.GL_VERTEX_SHADER)
+        fragmentShaderId = loadShader(context, fragmentShaderResourceId, GLES20.GL_FRAGMENT_SHADER)
+
+        // create programid
+        programId = GLES20.glCreateProgram()
+
+        // attach shaders to program
+        GLES20.glAttachShader(programId, vertexShaderId)
+        GLES20.glAttachShader(programId, fragmentShaderId)
+
+
+        // link program
+        GLES20.glLinkProgram(programId)
+        // validates the program and stores information in the program's log
+        GLES20.glValidateProgram(programId)
+
+    }
+
+
+    fun useProgram() {
+        GLES20.glUseProgram(programId)
+    }
+
+    fun stop() {
+        GLES20.glUseProgram(programId)
+    }
+
+    fun cleanUp() {
+        stop()
+
+        // detach shaders from program
+        GLES20.glDetachShader(programId, vertexShaderId)
+        GLES20.glDetachShader(programId, fragmentShaderId)
+
+        // deletes the shaders. Only possible after detach
+        GLES20.glDeleteShader(vertexShaderId)
+        GLES20.glDeleteShader(fragmentShaderId)
+
+        // delete program. frees memory and invalidates program
+        GLES20.glDeleteProgram(programId)
     }
 
 }
