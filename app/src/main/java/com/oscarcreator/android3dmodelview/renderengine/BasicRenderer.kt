@@ -1,16 +1,18 @@
-package com.oscarcreator.android3dmodelview
+package com.oscarcreator.android3dmodelview.renderengine
 
+import android.content.Context
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.opengl.Matrix
-import android.os.SystemClock
+import com.oscarcreator.android3dmodelview.R
+import com.oscarcreator.android3dmodelview.shaders.loadShader
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
-class BasicRenderer() : GLSurfaceView.Renderer {
+class BasicRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     private lateinit var triangle: Triangle
 
@@ -27,7 +29,7 @@ class BasicRenderer() : GLSurfaceView.Renderer {
         // set the background frame color
         GLES20.glClearColor(0f, 1f, 0f,1f)
 
-        triangle = Triangle()
+        triangle = Triangle(context)
     }
 
     // Called when screen size is changed
@@ -84,7 +86,7 @@ var triangleCoords = floatArrayOf(
     0.5f, -0.311f, 0f   // right
 )
 
-class Triangle {
+class Triangle(context: Context) {
 
     // r, g, b, alpha
     val color = floatArrayOf(0.34567f, 0.4567854f, 0.289348f, 1f)
@@ -113,26 +115,10 @@ class Triangle {
     private val vertexCount: Int = triangleCoords.size / COORDS_PER_VERTEX
     private val vertexStride: Int = COORDS_PER_VERTEX * 4 // 4 bytes per vertex
 
-    private val vertexShaderCode = """
-        uniform mat4 uMVPMatrix;
-        attribute vec4 vPosition;
-        void main() {
-            gl_Position = uMVPMatrix * vPosition;
-        }
-    """.trimIndent()
-
-    private val fragmentShaderCode = """
-        precision mediump float;
-        uniform vec4 vColor;
-        void main() {
-            gl_FragColor = vColor;
-        }
-    """.trimIndent()
-
     init {
 
-        val vertexShader: Int = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode)
-        val fragmentShader: Int = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode)
+        val vertexShader: Int = loadShader(context, R.raw.vertex_shader, GLES20.GL_VERTEX_SHADER)
+        val fragmentShader: Int = loadShader(context, R.raw.fragment_shader, GLES20.GL_FRAGMENT_SHADER)
         program = GLES20.glCreateProgram().also {
             // add vertex shader to program
             GLES20.glAttachShader(it, vertexShader)

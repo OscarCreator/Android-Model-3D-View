@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.opengl.GLSurfaceView
 import android.view.MotionEvent
+import com.oscarcreator.android3dmodelview.renderengine.BasicRenderer
 
 class Model3DView(context: Context): GLSurfaceView(context) {
 
@@ -20,7 +21,7 @@ class Model3DView(context: Context): GLSurfaceView(context) {
         setEGLContextClientVersion(3)
 
         //Only draw the view when drawing data is changed
-        renderer = BasicRenderer()
+        renderer = BasicRenderer(context)
 
         setRenderer(renderer)
 

@@ -1,8 +1,9 @@
-package com.oscarcreator.android3dmodelview
+package com.oscarcreator.android3dmodelview.enginetester
 
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.oscarcreator.android3dmodelview.Model3DView
 
 class MainActivity : AppCompatActivity() {
 
