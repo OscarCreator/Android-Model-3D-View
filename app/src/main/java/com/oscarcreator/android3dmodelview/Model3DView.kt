@@ -25,7 +25,7 @@ class Model3DView(context: Context): GLSurfaceView(context) {
 
         setRenderer(renderer)
 
-        renderMode = RENDERMODE_WHEN_DIRTY
+        renderMode = RENDERMODE_CONTINUOUSLY//RENDERMODE_WHEN_DIRTY
     }
 
     @SuppressLint("ClickableViewAccessibility")

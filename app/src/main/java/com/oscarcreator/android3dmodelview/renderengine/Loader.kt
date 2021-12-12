@@ -30,7 +30,7 @@ class Loader {
 
         storeDataInAttributeList(POSITION_VBO_LOCATION, 3, positions)
         unbindVAO()
-        return RawModel(vaoId, positions.size / 3)
+        return RawModel(vaoId, indices.size)
     }
 
     /**

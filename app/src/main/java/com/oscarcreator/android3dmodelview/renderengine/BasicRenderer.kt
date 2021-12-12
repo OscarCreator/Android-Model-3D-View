@@ -7,6 +7,7 @@ import android.opengl.GLSurfaceView
 import android.opengl.Matrix
 import com.oscarcreator.android3dmodelview.models.RawModel
 import com.oscarcreator.android3dmodelview.shaders.StaticShader
+import com.oscarcreator.android3dmodelview.util.Vector3f
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -32,7 +33,7 @@ class BasicRenderer(private val context: Context) : GLSurfaceView.Renderer {
 
         shader = StaticShader(context)
         loader = Loader()
-        model = loader.loadToVAO(triangleCoords, intArrayOf(0, 1, 2))
+        model = loader.loadToVAO(triangleCoords, intArrayOf(0, 1, 2, 1, 2, 3))
     }
 
     // Called when screen size is changed
@@ -46,6 +47,10 @@ class BasicRenderer(private val context: Context) : GLSurfaceView.Renderer {
         // in the onDrawFrame() method
         Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1f, 1f, 3f, 7f)
     }
+
+    var r: Float = 0f
+    var g: Float = 0f
+    var b: Float = 0f
 
     override fun onDrawFrame(p0: GL10?) {
         // redraw background color
@@ -69,7 +74,14 @@ class BasicRenderer(private val context: Context) : GLSurfaceView.Renderer {
 
         shader.useProgram()
 
+        r = if (r > 1f) 0f else r + 0.005f
+        g = if (g > 1f) 0f else g + 0.01f
+        b = if (b > 1f) 0f else b + 0.002f
+
+
         shader.loadViewModelProjectionMatrix(scratch)
+        // 0.37f
+        shader.loadColor(Vector3f(r, g, b))
 
         prepareModel(model)
 
@@ -93,7 +105,8 @@ class BasicRenderer(private val context: Context) : GLSurfaceView.Renderer {
 }
 
 var triangleCoords = floatArrayOf(
-    0f, 0.622f, 0f,  // top
-    -0.5f, -0.311f, 0f, // left
-    0.5f, -0.311f, 0f   // right
+    -0.5f, 0.5f, 0f,
+    -0.3f, -0.3f, 0f,
+    0.5f, 0.5f, 0f,
+    0.5f, -0.5f, 0f,
 )

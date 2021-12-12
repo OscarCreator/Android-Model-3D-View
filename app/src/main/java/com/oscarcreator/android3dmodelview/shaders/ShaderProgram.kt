@@ -3,6 +3,7 @@ package com.oscarcreator.android3dmodelview.shaders
 import android.content.Context
 import android.opengl.GLES30
 import android.util.Log
+import com.oscarcreator.android3dmodelview.util.Vector3f
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -127,6 +128,16 @@ abstract class ShaderProgram(context: Context, vertexShaderResourceId: Int, frag
         GLES30.glUniformMatrix4fv(location, 1, false, matrixBuffer)
     }
 
+    /**
+     * Modifies the uniform in the passed location to the value in the vector
+     *
+     * @param location the location of the uniform to be modified.
+     * @param vector the value the uniform will be changed to.
+     * */
+    protected fun loadVector(location: Int, vector: Vector3f) {
+        GLES30.glUniform3f(location, vector.x, vector.y, vector.z)
+    }
+
 
 }
 
@@ -148,7 +159,7 @@ fun loadShader(context: Context, resourceId: Int, type: Int): Int {
         bufferedReader.close()
     } catch (e: IOException) {
         e.printStackTrace()
-        exitProcess(-1);
+        exitProcess(-1)
     }
 
     val shaderId = GLES30.glCreateShader(type)
