@@ -47,10 +47,14 @@ class Renderer(
     private fun prepareModel(model: RawModel) {
         GLES30.glBindVertexArray(model.vaoId)
         GLES30.glEnableVertexAttribArray(POSITION_VBO_LOCATION)
+        GLES30.glEnableVertexAttribArray(TEXTURE_VBO_LOCATION)
+        GLES30.glEnableVertexAttribArray(NORMALS_VBO_LOCATION)
     }
 
     private fun unbindModel() {
         GLES30.glDisableVertexAttribArray(POSITION_VBO_LOCATION)
+        GLES30.glDisableVertexAttribArray(TEXTURE_VBO_LOCATION)
+        GLES30.glDisableVertexAttribArray(NORMALS_VBO_LOCATION)
         GLES30.glBindVertexArray(0)
     }
 
@@ -58,7 +62,8 @@ class Renderer(
 
         val transformationMatrix = FloatArray(16)
         Matrix.setIdentityM(transformationMatrix, 0)
-        //Matrix.translateM(transformationMatrix, 0, 0f, 0f, 0f)
+        Matrix.translateM(transformationMatrix, 0, 0f, 0f, -5f)
+        Matrix.rotateM(transformationMatrix, 0, 30.0f, 1f, 1f, 1f)
 
         shader.loadTransformationMatrix(transformationMatrix)
     }

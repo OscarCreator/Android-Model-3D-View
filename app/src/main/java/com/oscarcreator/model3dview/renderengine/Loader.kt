@@ -8,6 +8,8 @@ import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
 const val POSITION_VBO_LOCATION = 0
+const val TEXTURE_VBO_LOCATION = 1
+const val NORMALS_VBO_LOCATION = 2
 
 class Loader {
 
@@ -23,12 +25,14 @@ class Loader {
      * @param indices the order of the points to form the triangles
      * @return a [RawModel] containing the VAO associated with the data.
      * */
-    fun loadToVAO(positions: FloatArray, indices: IntArray): RawModel {
+    fun loadToVAO(positions: FloatArray, textureCoordinates: FloatArray, normals: FloatArray, indices: IntArray): RawModel {
         val vaoId = createVAO()
 
         bindIndicesBuffer(indices)
 
         storeDataInAttributeList(POSITION_VBO_LOCATION, 3, positions)
+        storeDataInAttributeList(TEXTURE_VBO_LOCATION, 2, textureCoordinates)
+        storeDataInAttributeList(NORMALS_VBO_LOCATION, 3, normals)
         unbindVAO()
         return RawModel(vaoId, indices.size)
     }

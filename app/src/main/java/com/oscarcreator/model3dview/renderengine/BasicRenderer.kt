@@ -3,6 +3,7 @@ package com.oscarcreator.model3dview.renderengine
 import android.content.Context
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
+import com.oscarcreator.model3dview.R
 import com.oscarcreator.model3dview.models.RawModel
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -22,7 +23,7 @@ class BasicRenderer(
 
     override fun onSurfaceCreated(p0: GL10?, p1: EGLConfig?) {
         loader = Loader()
-        model = loader.loadToVAO(triangleCoords, intArrayOf(0, 1, 2, 1, 3, 2))
+        model = loadObjModel(context, R.raw.cube, loader)
         renderer = MasterRenderer(context, surfaceView.width, surfaceView.height)
     }
 
@@ -36,10 +37,3 @@ class BasicRenderer(
     }
 
 }
-
-var triangleCoords = floatArrayOf(
-    -0.5f, 0.5f, -2.7f,
-    -0.5f, -0.5f, -2.7f,
-    0.5f, 0.5f, -2.7f,
-    0.5f, -0.5f, -2.7f
-)

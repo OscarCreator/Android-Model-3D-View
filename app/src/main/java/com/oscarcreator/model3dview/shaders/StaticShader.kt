@@ -2,6 +2,8 @@ package com.oscarcreator.model3dview.shaders
 
 import android.content.Context
 import com.oscarcreator.model3dview.R
+import com.oscarcreator.model3dview.renderengine.NORMALS_VBO_LOCATION
+import com.oscarcreator.model3dview.renderengine.TEXTURE_VBO_LOCATION
 import com.oscarcreator.model3dview.util.Vector3f
 
 class StaticShader(context: Context) :
@@ -20,6 +22,9 @@ class StaticShader(context: Context) :
 
     override fun bindAttributes() {
         super.bindAttribute(POSITIONS_VBO_LOCATION, "position")
+        super.bindAttribute(TEXTURE_VBO_LOCATION, "textureCoordinate")
+        super.bindAttribute(NORMALS_VBO_LOCATION, "normal")
+
     }
 
     override fun getAllUniformLocations() {
