@@ -21,7 +21,7 @@ class Model3DView(context: Context): GLSurfaceView(context) {
         setEGLContextClientVersion(3)
 
         //Only draw the view when drawing data is changed
-        renderer = BasicRenderer(context)
+        renderer = BasicRenderer(context, this)
 
         setRenderer(renderer)
 

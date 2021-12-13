@@ -8,7 +8,9 @@ class StaticShader(context: Context) :
     ShaderProgram(context, R.raw.vertex_shader, R.raw.fragment_shader) {
 
     // location of the uniform
-    private var location_modelViewProjectionMatrix: Int = 0
+    private var location_transformationMatrix: Int = 0
+    private var location_projectionMatrix: Int = 0
+    private var location_viewMatrix: Int = 0
     private var location_color: Int = 0
 
 
@@ -21,18 +23,37 @@ class StaticShader(context: Context) :
     }
 
     override fun getAllUniformLocations() {
-        //location_color = super.getUniformLocation("vColor")
-        location_modelViewProjectionMatrix = super.getUniformLocation("uMVPMatrix")
+        location_transformationMatrix = super.getUniformLocation("transformationMatrix")
+        location_projectionMatrix = super.getUniformLocation("projectionMatrix")
+        location_viewMatrix = super.getUniformLocation("viewMatrix")
         location_color = super.getUniformLocation("color")
     }
 
     /**
-     * Modifies the uniform at [location_modelViewProjectionMatrix] to the passed data.
+     * Modifies the uniform at [location_transformationMatrix] to the passed data,
      *
-     * @param floatArray the new value of uniform at [location_modelViewProjectionMatrix]
+     * @param floatArray the new value of uniform at [location_transformationMatrix]
      * */
-    fun loadViewModelProjectionMatrix(floatArray: FloatArray) {
-        super.loadMatrix(location_modelViewProjectionMatrix, floatArray)
+    fun loadTransformationMatrix(floatArray: FloatArray) {
+        super.loadMatrix(location_transformationMatrix, floatArray)
+    }
+
+    /**
+     * Modifies the uniform at [location_projectionMatrix] to the passed data.
+     *
+     * @param floatArray the new value of uniform at [location_projectionMatrix]
+     * */
+    fun loadProjectionMatrix(floatArray: FloatArray) {
+        super.loadMatrix(location_projectionMatrix, floatArray)
+    }
+
+    /**
+     * Modifies the unform at [location_viewMatrix] to the passed data.
+     *
+     * @param floatArray the new value of uniform at [location_viewMatrix]
+     * */
+    fun loadViewMatrix(floatArray: FloatArray) {
+        super.loadMatrix(location_viewMatrix, floatArray)
     }
 
     /**
