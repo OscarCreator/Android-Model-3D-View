@@ -1,10 +1,10 @@
-package com.oscarcreator.android3dmodelview
+package com.oscarcreator.model3dview
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.opengl.GLSurfaceView
 import android.view.MotionEvent
-import com.oscarcreator.android3dmodelview.renderengine.BasicRenderer
+import com.oscarcreator.model3dview.renderengine.BasicRenderer
 
 class Model3DView(context: Context): GLSurfaceView(context) {
 

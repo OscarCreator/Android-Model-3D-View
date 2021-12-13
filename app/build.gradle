@@ -7,7 +7,7 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "com.oscarcreator.android3dmodelview"
+        applicationId "com.oscarcreator.model3dview"
         minSdk 18
         targetSdk 31
         versionCode 1

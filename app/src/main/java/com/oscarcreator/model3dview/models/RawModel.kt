@@ -1,4 +1,4 @@
-package com.oscarcreator.android3dmodelview.models
+package com.oscarcreator.model3dview.models
 
 /**
  * This object stores the Vertex Array Object (VAO) identifier and the vertex count.

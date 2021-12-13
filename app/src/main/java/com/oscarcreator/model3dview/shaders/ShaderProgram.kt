@@ -1,9 +1,9 @@
-package com.oscarcreator.android3dmodelview.shaders
+package com.oscarcreator.model3dview.shaders
 
 import android.content.Context
 import android.opengl.GLES30
 import android.util.Log
-import com.oscarcreator.android3dmodelview.util.Vector3f
+import com.oscarcreator.model3dview.util.Vector3f
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader

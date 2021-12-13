@@ -1,7 +1,7 @@
-package com.oscarcreator.android3dmodelview.renderengine
+package com.oscarcreator.model3dview.renderengine
 
 import android.opengl.GLES30
-import com.oscarcreator.android3dmodelview.models.RawModel
+import com.oscarcreator.model3dview.models.RawModel
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer

@@ -1,4 +1,4 @@
-package com.oscarcreator.android3dmodelview
+package com.oscarcreator.model3dview
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

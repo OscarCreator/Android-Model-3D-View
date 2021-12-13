@@ -1,4 +1,4 @@
-package com.oscarcreator.android3dmodelview.util
+package com.oscarcreator.model3dview.util
 
 data class Vector3f(
     val x: Float,

@@ -1,4 +1,4 @@
-package com.oscarcreator.android3dmodelview
+package com.oscarcreator.model3dview
 
 import org.junit.Test
 

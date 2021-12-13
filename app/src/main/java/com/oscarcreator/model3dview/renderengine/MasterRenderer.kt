@@ -1,10 +1,10 @@
-package com.oscarcreator.android3dmodelview.renderengine
+package com.oscarcreator.model3dview.renderengine
 
 import android.content.Context
 import android.opengl.Matrix
-import com.oscarcreator.android3dmodelview.models.RawModel
-import com.oscarcreator.android3dmodelview.shaders.StaticShader
-import com.oscarcreator.android3dmodelview.util.Vector3f
+import com.oscarcreator.model3dview.models.RawModel
+import com.oscarcreator.model3dview.shaders.StaticShader
+import com.oscarcreator.model3dview.util.Vector3f
 
 class MasterRenderer(
     context: Context,

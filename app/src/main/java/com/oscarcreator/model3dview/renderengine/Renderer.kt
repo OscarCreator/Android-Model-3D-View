@@ -1,9 +1,9 @@
-package com.oscarcreator.android3dmodelview.renderengine
+package com.oscarcreator.model3dview.renderengine
 
 import android.opengl.GLES30
 import android.opengl.Matrix
-import com.oscarcreator.android3dmodelview.models.RawModel
-import com.oscarcreator.android3dmodelview.shaders.StaticShader
+import com.oscarcreator.model3dview.models.RawModel
+import com.oscarcreator.model3dview.shaders.StaticShader
 
 class Renderer(
     val width: Int,
