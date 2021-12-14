@@ -4,7 +4,6 @@ import android.content.Context
 import com.oscarcreator.model3dview.R
 import com.oscarcreator.model3dview.renderengine.NORMALS_VBO_LOCATION
 import com.oscarcreator.model3dview.renderengine.TEXTURE_VBO_LOCATION
-import com.oscarcreator.model3dview.util.Vector3f
 
 class StaticShader(context: Context) :
     ShaderProgram(context, R.raw.vertex_shader, R.raw.fragment_shader) {
@@ -31,7 +30,6 @@ class StaticShader(context: Context) :
         location_transformationMatrix = super.getUniformLocation("transformationMatrix")
         location_projectionMatrix = super.getUniformLocation("projectionMatrix")
         location_viewMatrix = super.getUniformLocation("viewMatrix")
-        location_color = super.getUniformLocation("color")
     }
 
     /**
@@ -59,14 +57,5 @@ class StaticShader(context: Context) :
      * */
     fun loadViewMatrix(floatArray: FloatArray) {
         super.loadMatrix(location_viewMatrix, floatArray)
-    }
-
-    /**
-     * Modifies the uniform at [location_color] to the passed data.
-     *
-     * @param color the new color value of the model
-     * */
-    fun loadColor(color: Vector3f) {
-        super.loadVector(location_color, color)
     }
 }

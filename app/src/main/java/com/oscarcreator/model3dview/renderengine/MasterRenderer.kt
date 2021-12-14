@@ -2,9 +2,8 @@ package com.oscarcreator.model3dview.renderengine
 
 import android.content.Context
 import android.opengl.Matrix
-import com.oscarcreator.model3dview.models.RawModel
+import com.oscarcreator.model3dview.entities.Entity
 import com.oscarcreator.model3dview.shaders.StaticShader
-import com.oscarcreator.model3dview.util.Vector3f
 
 class MasterRenderer(
     context: Context,
@@ -23,10 +22,9 @@ class MasterRenderer(
     /**
      * Renders a model
      * */
-    fun render(model: RawModel) {
+    fun render(model: Entity) {
         renderer.prepare()
         shader.useProgram()
-        shader.loadColor(Vector3f(0.37f, 0.37f, 0.37f))
 
         val viewMatrix = FloatArray(16)
         Matrix.setIdentityM(viewMatrix, 0)

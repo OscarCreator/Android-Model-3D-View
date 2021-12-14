@@ -2,7 +2,8 @@ package com.oscarcreator.model3dview.renderengine
 
 import android.opengl.GLES30
 import android.opengl.Matrix
-import com.oscarcreator.model3dview.models.RawModel
+import com.oscarcreator.model3dview.entities.Entity
+import com.oscarcreator.model3dview.models.TexturedModel
 import com.oscarcreator.model3dview.shaders.StaticShader
 
 class Renderer(
@@ -35,20 +36,24 @@ class Renderer(
         GLES30.glClearColor(0.5f, 1f, 1f, 1f)
     }
 
-    fun render(model: RawModel) {
-        prepareModel(model)
+    fun render(entity: Entity) {
+        prepareModel(entity.texturedModel)
 
-        prepareInstance()
-        GLES30.glDrawElements(GLES30.GL_TRIANGLES, model.vertexCount, GLES30.GL_UNSIGNED_INT, 0)
+        prepareInstance(entity)
+        GLES30.glDrawElements(GLES30.GL_TRIANGLES, entity.texturedModel.model.vertexCount, GLES30.GL_UNSIGNED_INT, 0)
 
         unbindModel()
     }
 
-    private fun prepareModel(model: RawModel) {
-        GLES30.glBindVertexArray(model.vaoId)
+    private fun prepareModel(model: TexturedModel) {
+        GLES30.glBindVertexArray(model.model.vaoId)
         GLES30.glEnableVertexAttribArray(POSITION_VBO_LOCATION)
         GLES30.glEnableVertexAttribArray(TEXTURE_VBO_LOCATION)
         GLES30.glEnableVertexAttribArray(NORMALS_VBO_LOCATION)
+
+        GLES30.glActiveTexture(GLES30.GL_TEXTURE0)
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, model.texture.textureId)
+
     }
 
     private fun unbindModel() {
@@ -58,12 +63,14 @@ class Renderer(
         GLES30.glBindVertexArray(0)
     }
 
-    private fun prepareInstance() {
+    private fun prepareInstance(entity: Entity) {
 
         val transformationMatrix = FloatArray(16)
         Matrix.setIdentityM(transformationMatrix, 0)
-        Matrix.translateM(transformationMatrix, 0, 0f, 0f, -5f)
-        Matrix.rotateM(transformationMatrix, 0, 30.0f, 1f, 1f, 1f)
+        Matrix.translateM(transformationMatrix, 0, entity.position.x, entity.position.y, entity.position.z)
+        Matrix.rotateM(transformationMatrix, 0, entity.rotX, 1f, 0f, 0f)
+        Matrix.rotateM(transformationMatrix, 0, entity.rotY, 0f, 1f, 0f)
+        Matrix.rotateM(transformationMatrix, 0, entity.rotZ, 0f, 0f, 1f)
 
         shader.loadTransformationMatrix(transformationMatrix)
     }

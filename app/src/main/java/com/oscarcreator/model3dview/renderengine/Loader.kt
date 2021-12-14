@@ -1,6 +1,10 @@
 package com.oscarcreator.model3dview.renderengine
 
+import android.content.Context
+import android.graphics.BitmapFactory
 import android.opengl.GLES30
+import android.opengl.GLUtils
+import android.util.Log
 import com.oscarcreator.model3dview.models.RawModel
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -13,10 +17,17 @@ const val NORMALS_VBO_LOCATION = 2
 
 class Loader {
 
+    companion object {
+        const val TAG = "Loader"
+    }
+
     /** All generated VAOs. VAO is object storing one or more VBOs (attribute lists)*/
     private val vaos = mutableListOf<Int>()
     /** All generated VBOs. VBO is a memory buffer stored in the graphics card.*/
     private val vbos = mutableListOf<Int>()
+    /** All generated textures.*/
+    private val textures = mutableListOf<Int>()
+
 
     /**
      * Stores the positions and indices in a VAO.
@@ -35,6 +46,56 @@ class Loader {
         storeDataInAttributeList(NORMALS_VBO_LOCATION, 3, normals)
         unbindVAO()
         return RawModel(vaoId, indices.size)
+    }
+
+    /**
+     * Creates a texture with mipmap levels from the passed resource id.
+     *
+     * @return the identifier for the texture
+     * */
+    fun loadTexture(context: Context, resourceId: Int): Int {
+        val textureObjectId = IntArray(1)
+        // Generate a texture identifier
+        GLES30.glGenTextures(1, textureObjectId, 0)
+
+        if (textureObjectId.first() == 0) {
+            Log.i(TAG, "Could not generate a new OpenGL texture object")
+            return 0
+        }
+
+        val options = BitmapFactory.Options()
+        options.inScaled = false
+        // decodes the image resource to a bitmap
+        val bitmap = BitmapFactory.decodeResource(context.resources, resourceId, options)
+
+        if (bitmap == null) {
+            Log.i(TAG, "Resouce ID: $resourceId could not be decoded")
+            GLES30.glDeleteTextures(1, textureObjectId, 0)
+            return 0
+        }
+
+        // binds the texture in TEXTURE_2D target
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textureObjectId.first())
+        // defines how the texture should be minified
+        // LINEAR_MIPMAP_LINEAR (trilinear) : weighted average of two mipmaps that most closely
+        //  match the size of the pixel begin textured
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_LINEAR_MIPMAP_LINEAR)
+        // defines how the texture should be magnified
+        // LINEAR (biliear) : biliear interpolation performs linear interpolation in two directions
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_LINEAR)
+        // tells OpenGL to read in the bitmap data defined by bitmap and copy it
+        // over into the texture object that is currently bound
+        GLUtils.texImage2D(GLES30.GL_TEXTURE_2D, 0, bitmap, 0)
+        // speed up garbage collection by releasing data immediately
+        bitmap.recycle()
+        // generates mipmaps for all levels for the texture
+        GLES30.glGenerateMipmap(GLES30.GL_TEXTURE_2D)
+        // unbind texture
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, 0)
+
+        textures.add(textureObjectId.first())
+        return textureObjectId.first()
+
     }
 
     /**
