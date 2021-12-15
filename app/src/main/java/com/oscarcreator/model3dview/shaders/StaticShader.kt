@@ -2,9 +2,11 @@ package com.oscarcreator.model3dview.shaders
 
 import android.content.Context
 import com.oscarcreator.model3dview.R
+import com.oscarcreator.model3dview.entities.Camera
 import com.oscarcreator.model3dview.entities.Light
 import com.oscarcreator.model3dview.renderengine.NORMALS_VBO_LOCATION
 import com.oscarcreator.model3dview.renderengine.TEXTURE_VBO_LOCATION
+import com.oscarcreator.model3dview.util.createViewMatrix
 
 class StaticShader(context: Context) :
     ShaderProgram(context, R.raw.vertex_shader, R.raw.fragment_shader) {
@@ -65,8 +67,9 @@ class StaticShader(context: Context) :
      *
      * @param floatArray the new value of uniform at [location_viewMatrix]
      * */
-    fun loadViewMatrix(floatArray: FloatArray) {
-        super.loadMatrix(location_viewMatrix, floatArray)
+    fun loadViewMatrix(camera: Camera) {
+        val viewMatrix = createViewMatrix(camera)
+        super.loadMatrix(location_viewMatrix, viewMatrix)
     }
 
     fun loadLight(light: Light) {
