@@ -20,22 +20,25 @@ class BasicRenderer(
     private val surfaceView: GLSurfaceView
 ) : GLSurfaceView.Renderer {
 
-    private lateinit var model: Entity
+    private var model: Entity? = null
     private lateinit var loader: Loader
     private lateinit var renderer: MasterRenderer
 
     private lateinit var light: Light
     private lateinit var camera: Camera
 
-    // renderer code runs on a separate thread
-    @Volatile
-    var angle = 0f
+    private var modelId: Int = 0
+    private var textureId: Int = 0
 
     override fun onSurfaceCreated(p0: GL10?, p1: EGLConfig?) {
         loader = Loader()
-        val rawModel = loadObjModel(context, R.raw.utah_teapot_sharp_edges, loader)
-        val texturedModel = TexturedModel(rawModel, ModelTexture(loader.loadTexture(context, R.drawable.blue), 10f, 0.2f))
-        model = Entity(texturedModel, Vector3f(0f, 0f, -8f), 0f, 0f, 0f)
+        try {
+            val rawModel = loadObjModel(context, modelId, loader)
+            val texturedModel = TexturedModel(rawModel, ModelTexture(loader.loadTexture(context, textureId), 10f, 0.2f))
+            model = Entity(texturedModel, Vector3f(0f, 0f, -8f), 0f, 0f, 0f)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         renderer = MasterRenderer(context, surfaceView.width, surfaceView.height)
 
         light = Light(Vector3f(10f, 10f, 10f), Vector3f(1f, 1f, 1f))
@@ -48,7 +51,7 @@ class BasicRenderer(
         GLES20.glViewport(0,0, width, height)
     }
 
-    var time = 0.0
+    private var time = 0.0
 
     override fun onDrawFrame(p0: GL10?) {
         time += 1
@@ -56,7 +59,14 @@ class BasicRenderer(
         camera.position.x = (cos(Math.toRadians(time)) * 8).toFloat()
         camera.position.z = (sin(Math.toRadians(time)) * 8).toFloat() - 8
         camera.yaw = time.toFloat() - 90
-        renderer.render(light, camera, model)
+        model?.let {
+            renderer.render(light, camera, it)
+        }
+    }
+
+    fun setModel(modelId: Int, textureId: Int) {
+        this.modelId = modelId
+        this.textureId = textureId
     }
 
 }
