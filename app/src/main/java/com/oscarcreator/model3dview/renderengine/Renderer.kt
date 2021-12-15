@@ -33,7 +33,7 @@ class Renderer(
     fun prepare() {
         GLES30.glEnable(GLES30.GL_DEPTH_TEST)
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT or GLES30.GL_DEPTH_BUFFER_BIT)
-        GLES30.glClearColor(0.5f, 1f, 1f, 1f)
+        GLES30.glClearColor(0.23f, 0.23f, 0.23f, 1f)
     }
 
     fun render(entity: Entity) {
@@ -50,6 +50,8 @@ class Renderer(
         GLES30.glEnableVertexAttribArray(POSITION_VBO_LOCATION)
         GLES30.glEnableVertexAttribArray(TEXTURE_VBO_LOCATION)
         GLES30.glEnableVertexAttribArray(NORMALS_VBO_LOCATION)
+
+        shader.loadShineVariables(model.texture.shineDamper, model.texture.reflectivity)
 
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0)
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, model.texture.textureId)

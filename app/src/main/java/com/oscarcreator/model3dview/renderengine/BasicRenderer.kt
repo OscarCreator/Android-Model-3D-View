@@ -5,6 +5,7 @@ import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import com.oscarcreator.model3dview.R
 import com.oscarcreator.model3dview.entities.Entity
+import com.oscarcreator.model3dview.entities.Light
 import com.oscarcreator.model3dview.models.TexturedModel
 import com.oscarcreator.model3dview.textures.ModelTexture
 import com.oscarcreator.model3dview.util.Vector3f
@@ -20,16 +21,20 @@ class BasicRenderer(
     private lateinit var loader: Loader
     private lateinit var renderer: MasterRenderer
 
+    private lateinit var light: Light
+
     // renderer code runs on a separate thread
     @Volatile
     var angle = 0f
 
     override fun onSurfaceCreated(p0: GL10?, p1: EGLConfig?) {
         loader = Loader()
-        val rawModel = loadObjModel(context, R.raw.cube, loader)
-        val texturedModel = TexturedModel(rawModel, ModelTexture(loader.loadTexture(context, R.drawable.image)))
-        model = Entity(texturedModel, Vector3f(0f, 0f, -50f), 30f, 10f, 60f)
+        val rawModel = loadObjModel(context, R.raw.utah_teapot_sharp_edges, loader)
+        val texturedModel = TexturedModel(rawModel, ModelTexture(loader.loadTexture(context, R.drawable.blue), 10f, 0.2f))
+        model = Entity(texturedModel, Vector3f(0f, -2f, -10f), 0f, 0f, 0f)
         renderer = MasterRenderer(context, surfaceView.width, surfaceView.height)
+
+        light = Light(Vector3f(10f, 10f, 10f), Vector3f(1f, 1f, 1f))
     }
 
     // Called when screen size is changed
@@ -38,10 +43,8 @@ class BasicRenderer(
         GLES20.glViewport(0,0, width, height)
     }
     override fun onDrawFrame(p0: GL10?) {
-        model.rotX += 0.3f
         model.rotY += 0.2f
-        model.rotZ += 0.5f
-        renderer.render(model)
+        renderer.render(light, model)
     }
 
 }

@@ -138,6 +138,15 @@ abstract class ShaderProgram(context: Context, vertexShaderResourceId: Int, frag
         GLES30.glUniform3f(location, vector.x, vector.y, vector.z)
     }
 
+    /**
+     * Modifies the uniform in the passed location to the passed value
+     *
+     * @param location the location of the uniform to be modified
+     * @param float the value the uniform will be changed to
+     * */
+    protected fun loadFloat(location: Int, float: Float) {
+        GLES30.glUniform1f(location, float)
+    }
 
 }
 

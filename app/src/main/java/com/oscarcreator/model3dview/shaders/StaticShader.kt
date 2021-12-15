@@ -2,6 +2,7 @@ package com.oscarcreator.model3dview.shaders
 
 import android.content.Context
 import com.oscarcreator.model3dview.R
+import com.oscarcreator.model3dview.entities.Light
 import com.oscarcreator.model3dview.renderengine.NORMALS_VBO_LOCATION
 import com.oscarcreator.model3dview.renderengine.TEXTURE_VBO_LOCATION
 
@@ -12,7 +13,11 @@ class StaticShader(context: Context) :
     private var location_transformationMatrix: Int = 0
     private var location_projectionMatrix: Int = 0
     private var location_viewMatrix: Int = 0
-    private var location_color: Int = 0
+    private var location_lightPosition: Int = 0
+    private var location_lightColor: Int = 0
+    private var location_shineDamper: Int = 0
+    private var location_reflectivity: Int = 0
+
 
 
     companion object {
@@ -30,6 +35,11 @@ class StaticShader(context: Context) :
         location_transformationMatrix = super.getUniformLocation("transformationMatrix")
         location_projectionMatrix = super.getUniformLocation("projectionMatrix")
         location_viewMatrix = super.getUniformLocation("viewMatrix")
+
+        location_lightPosition = super.getUniformLocation("lightPosition")
+        location_lightColor = super.getUniformLocation("lightColor")
+        location_shineDamper = super.getUniformLocation("shineDamper")
+        location_reflectivity = super.getUniformLocation("reflectivity")
     }
 
     /**
@@ -57,5 +67,15 @@ class StaticShader(context: Context) :
      * */
     fun loadViewMatrix(floatArray: FloatArray) {
         super.loadMatrix(location_viewMatrix, floatArray)
+    }
+
+    fun loadLight(light: Light) {
+        super.loadVector(location_lightPosition, light.position)
+        super.loadVector(location_lightColor, light.color)
+    }
+
+    fun loadShineVariables(damper: Float, reflectivity: Float) {
+        super.loadFloat(location_shineDamper, damper)
+        super.loadFloat(location_reflectivity, reflectivity)
     }
 }
